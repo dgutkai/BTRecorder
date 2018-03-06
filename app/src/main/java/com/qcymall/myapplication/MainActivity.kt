@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                 AudioFormat.ENCODING_PCM_16BIT,
                 audioBufSize,
                 AudioTrack.MODE_STREAM)
-        player!!.play()
+
         startRecord()
     }
 
@@ -85,19 +85,14 @@ class MainActivity : AppCompatActivity() {
                     Log.e("BTRecordImpl", "change BluetoothScoOn" + mAudioManager.isBluetoothScoOn + ":" + timeout)
                 }
 
-//            if (Build.VERSION.SDK_INT <= 19){
-//                if (timeout < 10) {
-//                    Thread.sleep(400)
-//                }
-//                playNotif()
-//            }
-                mAudioManager.isBluetoothScoOn = true
+//                mAudioManager.setSpeakerphoneOn(false);
+//                mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
 
-                //                mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION)
-                mAudioManager.isSpeakerphoneOn = false
-//                playNotif()
-//                playNotif()
-//                Thread.sleep(700)
+//                mAudioManager.mode = AudioManager.MODE_NORMAL;
+//                mAudioManager.isBluetoothScoOn = true
+
+//                mAudioManager.isSpeakerphoneOn = true
+
                 if (mRecordingThread != null) {
                     mRecordingThread!!.pause()
                     mRecordingThread!!.interrupt()
@@ -107,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 mRecordingThread = RecordThread()
 //                }
                 mRecordingThread!!.start()
-
+                player!!.play()
 
             }
         }).start()
@@ -127,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 
         init {
 
-            var audiosource = MediaRecorder.AudioSource.VOICE_COMMUNICATION
+            var audiosource = MediaRecorder.AudioSource.VOICE_RECOGNITION
             if (Build.VERSION.SDK_INT > 19){
                 audiosource = MediaRecorder.AudioSource.VOICE_COMMUNICATION
             }
@@ -167,7 +162,7 @@ class MainActivity : AppCompatActivity() {
                             val valume = calculateVolume(buffer)
 
                             player!!.write(buffer, 0, readBytes)
-                            Log.e("RecordingManager", "endVoiceRequest() --> 3" + valume)
+                            Log.e("RecordingManager", "endVoiceRequest() --> " + valume)
                         }
 
                     }
@@ -179,7 +174,7 @@ class MainActivity : AppCompatActivity() {
 
                     }
 
-                    Log.e("RecordingManager", "endVoiceRequest() --> 3")
+                    Log.e("RecordingManager", "endVoiceRequest() --> ")
 //                  this.audioTrack.stop()
 
                 }

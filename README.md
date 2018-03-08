@@ -131,7 +131,7 @@ internal inner class RecordThread : Thread() {
         }
     }
 
-	// 计算录音音量
+    // 计算录音音量
     private fun calculateVolume(buffer: ByteArray): Int {
         val audioData = ShortArray(buffer.size / 2)
         ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(audioData)
@@ -174,7 +174,7 @@ fun initSoundPool() {
 fun playNotif() {
     try {
         try {
-        	// 加载音频文件，音频文件存放于Raw目录下，
+            // 加载音频文件，音频文件存放于Raw目录下，
             soundPool!!.load(BaseApplication.getContext(), R.raw.ding, 0)
             soundPool!!.setOnLoadCompleteListener { soundPool, sampleId, status ->
                 soundPool.play(sampleId,0.7f, 0.7f, 0, 0, 1.0f)
@@ -193,5 +193,70 @@ fun playNotif() {
 ~~~
 代码中，需要注意的是在初始化方法中，**.setUsage()**的参数设置为AudioAttributes.USAGE_MEDIA表示声音类型为多媒体类型，使用蓝牙耳机的通话模式下是听不到声音的；使用AudioAttributes.USAGE_VOICE_COMMUNICATION则可以使蓝牙耳机在通话模式下也能听到声音，其主要原因还是和蓝牙耳机的通信链路相关。
 ### 2、MediaPlayer
-对于android音频的播放，MediaPlayer确实强大而且方便使用，提供了对音频播放的各种控制，生命周期：
+对于android音频的播放，MediaPlayer确实强大而且方便使用，提供了对音频播放的各种控制，支持AAC、AMR、FLAC、MP3、MIDI、OGG、PCM等格式 ，生命周期：
 ![MediaPlayer生命周期](https://github.com/dgutkai/BTRecoder/blob/master/doc/mediaplayer_state_diagram.gif)</br>
+使用时，创建一个MediaPlayer实例，设置数据源，不要忘记prepare()，尽量使用异步prepareAync()，这样不会阻塞UI线程，播放完毕即使释放资源。
+~~~kotlin
+mediaPlayer.stop()
+mediaPlayer.release()
+mediaPlayer = null
+~~~
+#### A）直接播放Raw目录中的音频文件
+创建对象的时候直接指定文件ID，不需要设置setDataSource；不需要prepare()。
+~~~kotlin
+val meidaplayer = MediaPlayer.create(mContext, R.raw.network3)
+meidaplayer.start()
+meidaplayer.setOnCompletionListener {
+    meidaplayer.release()
+}
+~~~
+#### B）播放SD卡或网络上的音频文件
+~~~kotlin
+val mPlayer = MediaPlayer()
+mPlayer.setOnPreparedListener(MyOnPrepareListener())
+mPlayer.setOnCompletionListener(MyOnCompletionListener())
+// 播放SD卡音频
+mPlayer.setDataSource("../music/test.mp3")
+// 播放网络音频
+// mPlayer.setDataSource("https://../test.mp3")
+mPlayer.prepareAsync();
+mPlayer.start()
+~~~
+#### C）播放Asset目录中的音频文件
+~~~kotlin
+val mPlayer = MediaPlayer()
+mPlayer.setOnPreparedListener(MyOnPrepareListener())
+mPlayer.setOnCompletionListener(MyOnCompletionListener())
+val fd = getAssets().openFd("samsara.mp3");
+mPlayer.setDataSource(fd)
+mPlayer.prepareAsync();
+mPlayer.start()
+~~~
+## 3、AudioTrack
+AudioTrack是管理和播放单一音频资源的类。它用于PCM音频流的回放，实现方式是通过write方法把数据push到AudioTrack对象。简单的应用可以参考下面的代码：
+~~~kotlin
+private var audioBufSize: Int = 0
+private var player: AudioTrack? = null
+// 初始化
+audioBufSize = AudioTrack.getMinBufferSize(8000,
+            AudioFormat.CHANNEL_OUT_STEREO,
+            AudioFormat.ENCODING_PCM_16BIT)
+player = AudioTrack(AudioManager.STREAM_VOICE_CALL, 8000,
+        AudioFormat.CHANNEL_OUT_STEREO,
+        AudioFormat.ENCODING_PCM_16BIT,
+        audioBufSize,
+        AudioTrack.MODE_STREAM)
+...
+// 调用播放方法启动播放器
+player!!.play()
+~~~
+上面的代码运行之后，播放器就开始播放了，只是现在没有数据推送到AudioTrack，所以听不到声音。我们将麦克风采集到的PCM数据或解码后的PCM数据通过wirte方法写到AudioTarck缓存中，此时就能听到声音了。
+~~~kotlin
+player!!.write(buffer, 0, readBytes)
+~~~
+需要停止播放的时候，只要调用stop()方法即可停止播放。
+~~~kotlin
+player!!.stop()
+~~~
+## 实时录音播放
+上面讲到了Android的录音和播放，我们使用AudioRecord，将获取到的PCM数据直接通过AudioTrack的write方法写到缓存中，即可实现功能，具体实现参考代码。

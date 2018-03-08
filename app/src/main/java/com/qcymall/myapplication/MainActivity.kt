@@ -18,7 +18,11 @@ import java.nio.ByteOrder
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var mAudioManager: AudioManager
+    private var audioBufSize: Int = 0
+    private var player: AudioTrack? = null
+    private var mRecordingThread: RecordThread? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,11 +57,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private var audioBufSize: Int = 0
-
-    private var player: AudioTrack? = null
-
-    private var mRecordingThread: RecordThread? = null
 
     fun startRecord() {
 

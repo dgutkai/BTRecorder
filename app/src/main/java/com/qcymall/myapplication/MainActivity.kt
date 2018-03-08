@@ -16,6 +16,9 @@ import android.util.Log
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.*
+import android.media.MediaPlayer
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity() {
                 AudioTrack.MODE_STREAM)
 
         startRecord()
+
     }
 
     private fun initPermission() {
@@ -167,6 +171,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     try {
+
                         this.audioRecord.stop()
                         this.audioRecord.release()
                     }catch (audioException: Exception){

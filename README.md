@@ -155,8 +155,7 @@ internal inner class RecordThread : Thread() {
 #### 1、SoundPool播放音频
 SoundPool支持多个音频文件同时播放(组合音频也是有上限的)，延时短，比较适合短促、密集的场景，是游戏开发中音效播放的福音。
 SoundPool只适合短促的音效播放，不能用于长时间的音乐播放。
-
-** 1) 将音频文件复制到Raw目录中
+**1) 将音频文件复制到Raw目录中
 2）使用SoundPool.Builder()进行实例化
 3）加载音频文件load(Context context, int resId, int priority)
 4）设置加载完成回调对象

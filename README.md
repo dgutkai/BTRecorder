@@ -191,7 +191,7 @@ fun playNotif() {
     }
 }
 ~~~
-代码中，需要注意的是在初始化方法中，**.setUsage()**的参数设置为AudioAttributes.USAGE_MEDIA表示声音类型为多媒体类型，使用蓝牙耳机的通话模式下是听不到声音的；使用AudioAttributes.USAGE_VOICE_COMMUNICATION则可以使蓝牙耳机在通话模式下也能听到声音，其主要原因还是和蓝牙耳机的通信链路相关。
+代码中，需要注意的是在初始化方法中，**.setUsage()** 的参数设置为AudioAttributes.USAGE_MEDIA表示声音类型为多媒体类型，使用蓝牙耳机的通话模式下是听不到声音的；使用AudioAttributes.USAGE_VOICE_COMMUNICATION则可以使蓝牙耳机在通话模式下也能听到声音，其主要原因还是和蓝牙耳机的通信链路相关。
 ### 2、MediaPlayer
 对于android音频的播放，MediaPlayer确实强大而且方便使用，提供了对音频播放的各种控制，支持AAC、AMR、FLAC、MP3、MIDI、OGG、PCM等格式 ，生命周期：
 ![MediaPlayer生命周期](https://github.com/dgutkai/BTRecoder/blob/master/doc/mediaplayer_state_diagram.gif)</br>

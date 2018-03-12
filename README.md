@@ -52,9 +52,13 @@ MediaRecorder可用来录制音频和视频。在使用时，为了能够捕获�
 AudioRecord(int audioSource, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes)
 ~~~
 _**audioSource**:音频源，和MediaRecorder中的一致。
+
 **sampleRateInHz**：[采样率](https://baike.baidu.com/item/%E9%87%87%E6%A0%B7%E9%A2%91%E7%8E%87/1494233?fr=aladdin&fromid=972301&fromtitle=%E9%87%87%E6%A0%B7%E7%8E%87)，44100Hz是目前唯一保证可在所有设备上工作的速率。一般蓝牙耳机无法达到44100Hz的采样率，所有在使用蓝牙耳机录音的时候，设置为8000Hz或者16000Hz。
+
 **channelConfig**:描述音频通道的配置。一般可设置为AudioFormat.CHANNEL_IN_MONO，它可以保证在所有设备上运行。
+
 **audioFormat**：返回音频数据的格式。常用的可以设置为ENCODING_PCM_8BIT、ENCODING_PCM_16BIT。表示我们使用8位或者16为的PCM数据作为返回。PCM代表脉冲编码调制（Pulse Code Modulation），他实际上是原始的音频样本。因此能够设置每一个样本的分辨率为16位或8位。16位将占用很多其它的控件和处理能力，但表示的音频将更接近真实。
+
 **bufferSizeInBytes**：指定缓冲区的大小，使用时，一般我们通过AudioRecord来查询最小的缓冲区大小。_
 下面来看一下创建AudioRecord实例的代码：
 ~~~java
@@ -151,12 +155,12 @@ internal inner class RecordThread : Thread() {
 #### 1、SoundPool播放音频
 SoundPool支持多个音频文件同时播放(组合音频也是有上限的)，延时短，比较适合短促、密集的场景，是游戏开发中音效播放的福音。
 SoundPool只适合短促的音效播放，不能用于长时间的音乐播放。
-** 1) 将音频文件复制到Raw目录中**
-** 2）使用SoundPool.Builder()进行实例化**
-** 3）加载音频文件load(Context context, int resId, int priority)**
-** 4）设置加载完成回调对象**
-** 5）在加载完成回调中播放声音play(int soundID, float leftVolume, float rightVolume, int priority, int loop, float rate)**
-** 6）在不需要的时候释放资源release()**
+_** 1) 将音频文件复制到Raw目录中 **
+** 2）使用SoundPool.Builder()进行实例化 **
+** 3）加载音频文件load(Context context, int resId, int priority) **
+** 4）设置加载完成回调对象 **
+** 5）在加载完成回调中播放声音play(int soundID, float leftVolume, float rightVolume, int priority, int loop, float rate) **
+** 6）在不需要的时候释放资源release()**_
 具体可参考下面的代码实现：
 ~~~kotlin
 // 初始化方法，实例化SoundPool对象。
